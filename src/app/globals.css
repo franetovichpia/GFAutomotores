@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand: #e5202e;
+  --color-brand-dark: #b91420;
+  --color-ink: #09090b;
+  --color-panel: #141418;
+  --color-panel-2: #1c1c22;
+  --color-line: #2a2a33;
+  --color-muted: #9a9aa6;
+  --color-wa: #1fa855;
+  --font-display: 'Outfit', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ink);
+  color: #fff;
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-brand text-white shadow-lg shadow-brand/30 hover:bg-brand-dark;
+  }
+  .btn-outline {
+    @apply border border-white/25 text-white hover:border-brand hover:text-brand;
+  }
+  .btn-wa {
+    @apply bg-wa text-white hover:brightness-110;
+  }
+  .btn-sm {
+    @apply px-4 py-2 text-xs;
+  }
+  .field {
+    @apply w-full rounded-lg border border-line bg-panel-2 px-3 py-2.5 text-sm text-white placeholder:text-muted focus:border-brand focus:outline-none;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium tracking-wide text-muted uppercase;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-panel;
+  }
+}
