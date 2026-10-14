@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { site } from '@/config/site';
 import { instagramLink, waGeneral } from '@/lib/whatsapp';
 import { InstagramIcon, WhatsAppIcon } from '../shared/Icons';
+import SecretAdminAccess from './SecretAdminAccess';
 
 export default function Footer() {
   return (
     <footer className="border-t border-line bg-black">
       <div className="container-x grid gap-10 py-12 sm:grid-cols-3">
         <div>
-          <p className="text-lg font-semibold">{site.nombre}</p>
+          <SecretAdminAccess className="text-lg font-semibold">{site.nombre}</SecretAdminAccess>
           <p className="mt-2 max-w-xs text-sm text-muted">{site.descripcion}</p>
         </div>
 
