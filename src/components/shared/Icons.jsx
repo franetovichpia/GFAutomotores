@@ -45,3 +45,10 @@ export const CarPlaceholder = () => (
     <circle cx="88" cy="42" r="8" />
   </svg>
 );
+
+
+export const ChevronIcon = ({ direction = 'right' }) => (
+  <svg {...base} width={22} height={22} aria-hidden="true">
+    <path d={direction === 'left' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} />
+  </svg>
+);

@@ -19,11 +19,11 @@ export default function HomePage() {
   return (
     <PublicShell>
       <Hero marcas={marcasDe(enStock)} />
-      <Services />
-      <Stats vendidos={vendidos.length} enStock={enStock.length} />
       <StockPreview vehicles={enStock} />
+      <Services />
       <TradeInCTA />
-      <SoldVehicles vehicles={vendidos} />
+      <Stats vendidos={vendidos.length} enStock={enStock.length} />
+      <SoldVehicles vehicles={vendidos} limite={8} />
       <Testimonials />
       <TramitesCTA />
     </PublicShell>

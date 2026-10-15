@@ -1,24 +1,33 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatKm, formatPrecio, nombreVehiculo } from '@/lib/format';
 import { waVehiculo } from '@/lib/whatsapp';
-import { CarPlaceholder, CloseIcon, WhatsAppIcon } from '../shared/Icons';
+import { CarPlaceholder, ChevronIcon, CloseIcon, WhatsAppIcon } from '../shared/Icons';
 
 // Detalle del vehículo con galería de fotos
 export default function VehicleModal({ vehicle: v, onClose }) {
   const [index, setIndex] = useState(0);
+  const touchX = useRef(null);
+  const fotos = v.fotos || [];
+  const total = fotos.length;
+
+  // Pasa de foto en forma circular: después de la última vuelve a la primera
+  const mover = (paso) => setIndex((i) => (i + paso + total) % total);
 
   useEffect(() => {
-    const onKey = (e) => e.key === 'Escape' && onClose();
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      if (total > 1 && e.key === 'ArrowRight') setIndex((i) => (i + 1) % total);
+      if (total > 1 && e.key === 'ArrowLeft') setIndex((i) => (i - 1 + total) % total);
+    };
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [onClose]);
+  }, [onClose, total]);
 
-  const fotos = v.fotos || [];
   const datos = [
     ['Año', v.anio],
     ['Kilómetros', formatKm(v.km)],
@@ -47,14 +56,46 @@ export default function VehicleModal({ vehicle: v, onClose }) {
           <CloseIcon />
         </button>
 
-        <div className="flex aspect-video items-center justify-center bg-panel-2">
-          {fotos.length ? (
-            <img src={fotos[index]} alt={nombreVehiculo(v)} className="size-full object-contain" />
+        <div
+          className="relative flex aspect-video items-center justify-center bg-panel-2"
+          onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+          onTouchEnd={(e) => {
+            if (touchX.current == null || total < 2) return;
+            const dx = e.changedTouches[0].clientX - touchX.current;
+            if (Math.abs(dx) > 40) mover(dx < 0 ? 1 : -1);
+            touchX.current = null;
+          }}
+        >
+          {total ? (
+            <img src={fotos[index]} alt={`${nombreVehiculo(v)} - foto ${index + 1}`} className="size-full object-contain" />
           ) : (
             <CarPlaceholder />
           )}
+
+          {total > 1 && (
+            <>
+              <button
+                onClick={() => mover(-1)}
+                aria-label="Foto anterior"
+                className="absolute top-1/2 left-3 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/60 transition hover:bg-brand"
+              >
+                <ChevronIcon direction="left" />
+              </button>
+              <button
+                onClick={() => mover(1)}
+                aria-label="Foto siguiente"
+                className="absolute top-1/2 right-3 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/60 transition hover:bg-brand"
+              >
+                <ChevronIcon direction="right" />
+              </button>
+              <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-3 py-1 text-xs">
+                {index + 1} / {total}
+              </span>
+            </>
+          )}
         </div>
-        {fotos.length > 1 && (
+
+        {total > 1 && (
           <div className="flex gap-2 overflow-x-auto p-3">
             {fotos.map((f, i) => (
               <button
